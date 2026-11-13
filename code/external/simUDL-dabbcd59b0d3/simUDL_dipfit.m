@@ -1,0 +1,138 @@
+% simUDL_dipfit(): A plugin to solve an inverse problem.
+%
+% Author: Makoto Miyakoshi, SCCN,INC,UCSD
+%
+% History:  
+% 02/15/2022 Makoto. Created.
+
+% Copyright (C) 2022, Makoto Miyakoshi (mmiyakoshi@ucsd.edu) , SCCN,INC,UCSD
+%
+% Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are met:
+%
+% 1. Redistributions of source code must retain the above copyright notice,
+% this list of conditions and the following disclaimer.
+%
+% 2. Redistributions in binary form must reproduce the above copyright notice,
+% this list of conditions and the following disclaimer in the documentation
+% and/or other materials provided with the distribution.
+%
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+% THE POSSIBILITY OF SUCH DAMAGE.
+
+function simUDL_dipfit(EEG)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Perform dipfit using EEGLAB. %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Dipole moment is 1 nA*m.
+lf = sum(EEG.etc.simUDL.leadfieldMatrix,2)*EEG.etc.simUDL.lfmScalingFactor; % uV/(nA*m) so that when multiplied with dipole moment you obtain uV.
+
+[dipoleEst, modelForDipfit, TMPEEG] = dipfit_erpeeg(lf, EEG.chanlocs, 'settings', EEG.dipfit, 'threshold', 100);
+dipoleEst = dipoleEst(1);
+
+% The path to the modified function is as follows.
+% dipfit_erpeeg -> pop_multifit -> dipfit_nonlinear -> ft_dipolefitting (line 452).
+% Leadfield matrix describes voxel-to-electrode connection. Hence
+% for the same set of electrode locations, the same precomputed
+% data can be used!
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Visualize the results. %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figHandle = figure;
+set(figHandle, 'visible', 'on', 'position', [999 162 1044 1152]);
+tiledlayout(2,2)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Plot Fieldtrip's scalp topo, UDL, and the estimated dipole. %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+nexttile
+ft_plot_topo3d(EEG.etc.simUDL.elec.elecpos, dipoleEst.datapot); % To keep consistency with EEGLAB's scalp maps. The difference between dipoleEst.datapot and if is negligible.
+%ft_plot_topo3d(elec.elecpos, lf);
+maxDiffDatapotLf = [max(abs(dipoleEst.datapot-lf))]; % To monitor errors.
+%ft_plot_sens(elecSimu, 'label', 'off');
+rotate3d
+colorbar
+title(sprintf('Spherical 4-shell model, Max \\muV %.1f', max(lf)))
+
+% Plot UDL using ft_plot_sens.
+dip = [];
+dip.unit = 'm';
+dip.elecpos = EEG.etc.simUDL.udlPos';
+for i=1:size(dip.elecpos,1)
+    dip.label{i} = sprintf('%03d', i);
+end
+ft_plot_sens(dip, 'label', 'off', 'elecsize', 10, 'facecolor', [0 1 0]);
+
+% Plot the estmated dipole.
+ft_plot_dipole(dipoleEst.posxyz/1000, dipoleEst.momxyz'/1000, 'scale', 'm', 'diameter', 10/1000, 'length', 20/1000, 'color', [0 0 0])
+%title(sprintf('Radius=%.0fmm, (%d dipoles)\nEstimated depth of the single dipole=%.1fmm\nUDL depth=%.0fmm, dipole moment 1nAm', patchRadius*1000, length(selectedDipoleIdx), dipoleEst(1).posxyz(1,3), depthVec(depthIdx)*1000))
+title(sprintf('Radius %.0fmm, (%d dipoles)\nUDL depth %.0fmm, Est dip depth %.0fmm\nEst dip moment %.0fnAm', EEG.etc.simUDL.udlRadius*1000, size(EEG.etc.simUDL.leadfieldMatrix,2), EEG.etc.simUDL.userDefinedUdlDepth*1000, EEG.etc.simUDL.headmodel.r(1)*1000-dipoleEst(1).posxyz(1,3), sqrt(sum((dipoleEst.momxyz/1000).^2))))
+
+alpha 0.3
+colormap('jet')
+view([0 25])
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Plot EEGLAB's scalp topo projected from UDL. %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+nexttile
+topoplot(dipoleEst.datapot, EEG.chanlocs)
+title('Projection from UDL')
+colorbar
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Plot EEGLAB's scalp topo projected from the estimated single dipole. %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+nexttile
+topoplot(dipoleEst.sourcepot, EEG.chanlocs)
+title('Projection from the fitted single dipole')
+colorbar
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Plot the difference in a format of spatial profile. %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Obtain the equator electrode indices.
+yVec = EEG.etc.simUDL.elec.elecpos(:,1);
+nearEquatorElecIdx = find(abs(yVec)<0.005); % within +/-5 mm. 
+nearEquatorElec = EEG.etc.simUDL.elec.elecpos(nearEquatorElecIdx,:);
+xVec = nearEquatorElec(:,2);
+[sortedXVec, xSortingIdx] = sort(xVec);
+nearEquatorElecMaskIdx = nearEquatorElecIdx(xSortingIdx);
+
+nexttile
+equatorPotential_UDL             = dipoleEst.datapot(nearEquatorElecMaskIdx);
+equatorPotential_fittedSingleDip = dipoleEst.sourcepot(nearEquatorElecMaskIdx);
+plot(sortedXVec*1000, equatorPotential_UDL, 'linewidth', 1, 'marker', '.', 'markersize', 10)
+hold on
+plot(sortedXVec*1000, equatorPotential_fittedSingleDip, 'linewidth', 1, 'marker', '.', 'markersize', 10)
+xlabel('Equator line distance from the center (mm)')
+ylabel('Potentials at scalp electrodes (\muV)')
+legend({'UDL' 'Fit. dip.'})
+
+set(findall(gcf,'-property','fontsize'),'fontsize', 13)
+
+
+
+
+
+% print(sprintf('/data/projects/makoto/dipolePractice/p1415_forwardInverseSpheretri/depth%d_patchSize%d', depthIdx, patchSizeIdx), '-djpeg95', '-r200')
+% close(figHandle)
+% 
+% % Store the values.
+% resultMatrix(patchSizeIdx,:,depthIdx) = [length(selectedDipoleIdx) prcElecLargerThanHalfMax maxDiffDatapotLf dipoleEst.posxyz/1000 dipoleEst.momxyz/1000];

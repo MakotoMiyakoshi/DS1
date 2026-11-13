@@ -1,0 +1,255 @@
+[
+  {
+    "script": "p0000_preprocess_Leipzig.m",
+    "stage": 0,
+    "active_stage_strings": [
+      "p0100_imported"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0010_preprocess_Dortmund.m",
+    "stage": 10,
+    "active_stage_strings": [
+      "p0100_imported",
+      "p0108_imported"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0100_collectDipoles_Leipzig.m",
+    "stage": 100,
+    "active_stage_strings": [
+      "p0000_preprocess_Leipzig",
+      "p0100_collectDipoles_Leipzig"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0101_icaactVar_Leipzig.m",
+    "stage": 101,
+    "active_stage_strings": [
+      "p0000_preprocess_Leipzig",
+      "p0101_icaactVar_Leipzig"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0102_FOOOF_Leipzig.m",
+    "stage": 102,
+    "active_stage_strings": [
+      "p0000_preprocess_Leipzig",
+      "p0102_FOOOF_Leipzig"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0103_FOOOFagain_Leipzig.m",
+    "stage": 103,
+    "active_stage_strings": [
+      "p0000_preprocess_Leipzig",
+      "p0103_FOOOFagain_Leipzig"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0110_collectDipoles_Dortmund.m",
+    "stage": 110,
+    "active_stage_strings": [
+      "p0010_preprocess_Dortmund",
+      "p0110_collectDipoles_Dortmund"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0111_icaactVar_Dortmund.m",
+    "stage": 111,
+    "active_stage_strings": [
+      "p0010_preprocess_Dortmund",
+      "p0111_icaactVar_Dortmund"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0112_FOOOF_Dortmund.m",
+    "stage": 112,
+    "active_stage_strings": [
+      "p0010_preprocess_Dortmund",
+      "p0112_FOOOF_Dortmund"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0113_FOOOFagain_Dortmund.m",
+    "stage": 113,
+    "active_stage_strings": [
+      "p0010_preprocess_Dortmund",
+      "p0113_FOOOFagain_Dortmund"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0200_extractCorticalSurface.m",
+    "stage": 200,
+    "active_stage_strings": [
+      "p0200_extractCorticalSurface"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0210_checkDipfitDefaultModel.m",
+    "stage": 210,
+    "active_stage_strings": [
+      "p0010_preprocess_Dortmund",
+      "p0200_extractCorticalSurface",
+      "p0210_checkDipfitDefaultModel"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0220_modifyAAL.m",
+    "stage": 220,
+    "active_stage_strings": [
+      "p0210_checkDipfitDefaultModel",
+      "p0220_modifyAAL"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0221_modifiedAAL_Leipzig.m",
+    "stage": 221,
+    "active_stage_strings": [
+      "p0100_collectDipoles_Leipzig",
+      "p0220_modifyAAL",
+      "p0221_modifiedAAL_Leipzig"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0222_modifiedAAL_Dortmund.m",
+    "stage": 222,
+    "active_stage_strings": [
+      "p0110_collectDipoles_Dortmund",
+      "p0220_modifyAAL",
+      "p0222_modifiedAAL_Dortmund"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0231_modifiedAAL_Leipzig_subcorticalMask.m",
+    "stage": 231,
+    "active_stage_strings": [
+      "p0100_collectDipoles_Leipzig",
+      "p0220_modifyAAL",
+      "p0231_modifiedAAL_Leipzig_subcorticalMask"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0232_modifiedAAL_Dortmund_subcorticalMask.m",
+    "stage": 232,
+    "active_stage_strings": [
+      "p0110_collectDipoles_Dortmund",
+      "p0220_modifyAAL",
+      "p0232_modifiedAAL_Dortmund_subcorticalMask"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0400_simulateUDL.m",
+    "stage": 400,
+    "active_stage_strings": [],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p0410_plotSimUDL.m",
+    "stage": 410,
+    "active_stage_strings": [
+      "p0400_simulateUDL",
+      "p0410_plotSimUDL"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p1300_estimateDipDepth.m",
+    "stage": 1300,
+    "active_stage_strings": [
+      "p0100_collectDipoles_Leipzig",
+      "p0101_icaactVar_Leipzig",
+      "p0103_FOOOFagain_Leipzig",
+      "p0110_collectDipoles_Dortmund",
+      "p0111_icaactVar_Dortmund",
+      "p0113_FOOOFagain_Dortmund",
+      "p0210_checkDipfitDefaultModel",
+      "p0221_modifiedAAL_Leipzig",
+      "p0222_modifiedAAL_Dortmund",
+      "p0231_modifiedAAL_Leipzig_subcorticalMask",
+      "p0232_modifiedAAL_Dortmund_subcorticalMask",
+      "p1300_estimateDipDepth"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p1310_visualizeDipDepth.m",
+    "stage": 1310,
+    "active_stage_strings": [
+      "p0210_checkDipfitDefaultModel",
+      "p1300_estimateDipDepth",
+      "p1310_summary",
+      "p1310_visualizeDipDepth"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p1322_finalizeAngleFigures.m",
+    "stage": 1322,
+    "active_stage_strings": [
+      "p1300_estimateDipDepth",
+      "p1322_finalizeAngleFigures"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p1341_finalizeFigure007.m",
+    "stage": 1341,
+    "active_stage_strings": [
+      "p0210_checkDipfitDefaultModel",
+      "p1300_estimateDipDepth",
+      "p1341_finalizeFigure007"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  },
+  {
+    "script": "p1400_figure8AngleDepth.m",
+    "stage": 1400,
+    "active_stage_strings": [
+      "p1300_estimateDipDepth",
+      "p1400_figure8AngleDepth"
+    ],
+    "forward_refs": [],
+    "self_load_lines": []
+  }
+]

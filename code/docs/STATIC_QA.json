@@ -1,0 +1,41 @@
+{
+  "stage_count": 24,
+  "status": "source-level static scan only, no MATLAB execution",
+  "root_entries": [
+    "README.md",
+    "code"
+  ],
+  "root_readme_exception_approved": true,
+  "active_stage_names": [
+    "p0000_preprocess_Leipzig",
+    "p0010_preprocess_Dortmund",
+    "p0100_collectDipoles_Leipzig",
+    "p0101_icaactVar_Leipzig",
+    "p0102_FOOOF_Leipzig",
+    "p0103_FOOOFagain_Leipzig",
+    "p0110_collectDipoles_Dortmund",
+    "p0111_icaactVar_Dortmund",
+    "p0112_FOOOF_Dortmund",
+    "p0113_FOOOFagain_Dortmund",
+    "p0200_extractCorticalSurface",
+    "p0210_checkDipfitDefaultModel",
+    "p0220_modifyAAL",
+    "p0221_modifiedAAL_Leipzig",
+    "p0222_modifiedAAL_Dortmund",
+    "p0231_modifiedAAL_Leipzig_subcorticalMask",
+    "p0232_modifiedAAL_Dortmund_subcorticalMask",
+    "p0400_simulateUDL",
+    "p0410_plotSimUDL",
+    "p1300_estimateDipDepth",
+    "p1310_visualizeDipDepth",
+    "p1322_finalizeAngleFigures",
+    "p1341_finalizeFigure007",
+    "p1400_figure8AngleDepth"
+  ],
+  "numeric_dependency_and_selfload_violations": [],
+  "canonical_geometry_stage": "p1300_estimateDipDepth",
+  "final_figure7": "p1341_finalizeFigure007",
+  "final_figure8": "p1400_figure8AngleDepth",
+  "dortmund_asr_burst_criterion_sd": 20,
+  "cannot_certify_execution": true
+}
